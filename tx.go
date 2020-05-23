@@ -205,6 +205,15 @@ func (tx *WriteTx) Check(check *ConditionCheck) *WriteTx {
 	return tx
 }
 
+// Items returns the tx's writeTxOps
+func (tx *WriteTx) Items() []interface{} {
+	items := make([]interface{}, len(tx.items))
+	for i, item := range tx.items {
+		items[i] = item
+	}
+	return items
+}
+
 // Idempotent marks this transaction as idempotent when enabled is true.
 // This automatically generates a unique idempotency token for you.
 // An idempotent transaction ran multiple times will have the same effect as being run once.

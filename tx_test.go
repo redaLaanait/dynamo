@@ -1,10 +1,11 @@
 package dynamo
 
 import (
-	"github.com/gofrs/uuid"
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/gofrs/uuid"
 
 	"github.com/aws/aws-sdk-go/aws/awserr"
 )
@@ -152,6 +153,11 @@ func TestTx(t *testing.T) {
 	tx.Put(table.Put(widget{UserID: 69, Time: date1}).If("'Msg' = ?", "should not exist"))
 	tx.Put(table.Put(widget{UserID: 69, Time: date2}))
 	tx.Check(table.Check("UserID", 69).Range("Time", date3).IfExists().If("Msg = ?", "don't exist foo"))
+
+	if count := len(tx.Items()); count != 3 {
+		t.Errorf("expected tx items length be %d, got: %d", 3, count)
+	}
+
 	err = tx.Run()
 	if err == nil {
 		t.Error("expected error")
